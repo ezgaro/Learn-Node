@@ -37,6 +37,9 @@ app.use(session({
   secret: process.env.SECRET,
   key: process.env.KEY,
   resave: false,
+  secret: process.env.SECRET,
+  key: process.env.KEY,
+  resave: false,
   saveUninitialized: false,
   store: new MongoStore({ mongoUrl: process.env.DATABASE })
 }));
