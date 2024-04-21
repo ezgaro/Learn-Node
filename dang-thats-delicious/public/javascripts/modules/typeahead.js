@@ -23,6 +23,7 @@ function typeAhead(search) {
       });
   });
   searchInput.on('keyup', e => {
+    // if they aren't pressing up, down or enter, who cares!
     if (![38, 40, 13].includes(e.keyCode)) {
       return;
     }
@@ -42,6 +43,8 @@ function typeAhead(search) {
       window.location = current.href;
       return;
     }
+
+    next.classList.add(activeClass);
     if (current) {
       current.classList.remove(activeClass);
     }
