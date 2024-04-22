@@ -1,4 +1,7 @@
-const axious = require('axios');
+import axious from 'axios';
+import dompurify from 'dompurify';
+
+
 function typeAhead(search) {
   if (!search) return;
   const searchInput = search.querySelector('input[name="search"]');
@@ -13,10 +16,10 @@ function typeAhead(search) {
       .get(`/api/search?q=${this.value}`)
       .then(res => {
         if (res.data.length) {
-          searchResults.innerHTML = res.data.map(item => `<a href="/store/${item.slug}" class="search__result"><strong>${item.name}</strong></a>`).join('');
+          searchResults.innerHTML = dompurify.sanitize(res.data.map(item => `<a href="/store/${item.slug}" class="search__result"><strong>${item.name}</strong></a>`).join(''));
           return;
         }
-        searchResults.innerHTML = `<div class="search__result">No results for ${this.value} found!</div>`;
+        searchResults.innerHTML = dompurify.sanitize(`<div class="search__result">No results for ${this.value} found!</div>`);
       })
       .catch(err => {
         console.error(err);
@@ -44,10 +47,10 @@ function typeAhead(search) {
       return;
     }
 
-    next.classList.add(activeClass);
     if (current) {
       current.classList.remove(activeClass);
     }
+    next.classList.add(activeClass);
   });
 }
 
