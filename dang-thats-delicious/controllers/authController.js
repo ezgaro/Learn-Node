@@ -50,7 +50,7 @@ exports.forgot = async (req, res) => {
     filename: 'password-reset'
   });
   req.flash('success', `You have been emailed a password reset link.`);
-  // 4. Redirect to login page
+  // 4. Redirect to login 
   res.redirect('/login');
 };
 
