@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
+mongoose.Promise = global.Promise; // Tell Mongoose to use ES6 promises
 
 const reviewSchema = new mongoose.Schema({
   created: {
@@ -26,5 +26,13 @@ const reviewSchema = new mongoose.Schema({
     max: 5
   }
 });
+
+function autopopulate(next) {
+  this.populate('author');
+  next();
+}
+
+reviewSchema.pre('find', autopopulate);
+reviewSchema.pre('findOne', autopopulate);
 
 module.exports = mongoose.model('Review', reviewSchema);

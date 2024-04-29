@@ -41,6 +41,11 @@ const storeSchema = new mongoose.Schema({
     ref: "User",
     required: "You must supply an author"
   }
+},{
+  // Virtual fields will not be visible by default to JSON or Object when sent to the client even thow they will be available in the model
+  // We need to set the virtuals option to true to make them visible
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true},
 });
 
 // Define our indexes to improve the performance of our queries
@@ -72,7 +77,7 @@ storeSchema.pre("save", async function(next) {
   // if we have stores with the same slug
   if (storesWithSlug.length) {
     this.slug = `${this.slug}-${storesWithSlug.length + 1}`;
-}
+  }
   next(); // move on to the next middleware
   // TODO make more resilient so slugs are unique
 });
@@ -89,5 +94,13 @@ storeSchema.statics.getTagsList = function() {
     { $sort: { count: -1 } }
   ]);
 };
+
+// Virtual field to populate the reviews of a store
+// Find reviews where the store _id property === to the reviews store property
+storeSchema.virtual("reviews", {
+  ref: "Review", // what model to link : Go to the Review model
+  localField: "_id", // which field on the store : Find reviews where the store field is equal to the _id of the store
+  foreignField: "store" // which field on the review : Look at the store field in the Review model (JOIN with foreign key SQL alike)
+});
 
 module.exports = mongoose.model("Store", storeSchema);
